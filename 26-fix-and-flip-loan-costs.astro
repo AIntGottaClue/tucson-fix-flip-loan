@@ -1,0 +1,57 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import DealForm from '../components/DealForm.astro';
+import {brand,domain} from '../data/cities';
+import {getLoanTerms,rateStructures,workedExample,dollars} from '../data/loanTerms';
+const loanTerms=await getLoanTerms();
+const example=workedExample(loanTerms);
+const url=`https://${domain}/fix-and-flip-loan-costs/`;
+const faqs=[
+  {q:'Are the rates on this page real offers?',a:"These are our listed program terms, not an offer for your project. Our lending partner reviews each file. Review the complete written terms on your file."},
+  {q:'What does after-repair value mean?',a:'After-repair value, or ARV, is the estimated resale price of the home once the planned renovation is complete. Lenders use it to size the advance, so the comparable sales behind the estimate matter.'},
+  {q:'Are there costs beyond the interest rate?',a:'Yes. Points or origination fees, title and escrow charges, insurance, and possible draw or inspection fees can all be part of a file. Ask for the complete fee list before you commit to any offer.'},
+  {q:'How is interest usually paid on a fix and flip loan?',a:"Many fix and flip loans are structured with monthly interest payments and the principal due when the home sells or the term ends. Our lending partner's written offer controls the actual structure, so read it closely."},
+  {q:'Do all lenders charge the same?',a:'No. Pricing varies by lender, by property and by borrower. Comparing full written offers, not headline rates, is the only reliable way to know what a project will cost.'}
+];
+const jsonld=[{'@context':'https://schema.org','@type':'WebPage',name:'Fix and Flip Loan Costs',url,description:'How fix and flip loan costs fit together: monthly interest, closing points, extensions and the complete written offer.',isPartOf:{'@type':'WebSite',name:brand,url:`https://${domain}/`}},{'@context':'https://schema.org','@type':'FAQPage',mainEntity:faqs.map(f=>({'@type':'Question',name:f.q,acceptedAnswer:{'@type':'Answer',text:f.a}}))},{'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'Home',item:`https://${domain}/`},{'@type':'ListItem',position:2,name:'Fix and Flip Loan Costs',item:url}]}];
+---
+<Base title="Fix and Flip Loan Costs: Rates, ARV and Fees | Tucson Fix & Flip Loan" description="How fix and flip loan costs fit together: monthly interest, closing points, extensions and the complete written offer." path="/fix-and-flip-loan-costs/" jsonld={jsonld} fabHref="#deal-form">
+<Header base="/"/><main>
+<section class="hero" id="main"><div class="container hero__inner"><div class="hero__content"><h1>Fix and Flip <em>Loan Costs</em></h1><div class="hero__rule"></div><p>See how our points, monthly interest and extension terms affect a fix and flip project. Tell us about your Tucson Metro property and renovation plan to discuss the costs for your project.</p></div><DealForm cityName="Tucson Metro" location="Loan Costs Guide" /></div></section>
+<section class="section section--tint"><div class="container">
+<h2>Our financing structures</h2>
+<p class="section__intro">Our program describes financing up to {loanTerms.fundingMax} with {loanTerms.closingSpeed} and {loanTerms.drawTiming}. Our listed terms are {loanTerms.feeDisclosure}. Ask for all charges and timing in writing.</p>
+<div class="compare-wrap"><table class="compare-table structure-table"><caption class="sr-only">Our two listed fix and flip financing structures</caption><thead><tr><th scope="col">Term</th>{rateStructures(loanTerms).map(structure => <th scope="col">{structure.name}</th>)}</tr></thead><tbody><tr><th scope="row">At closing</th>{rateStructures(loanTerms).map(structure => <td>{structure.closing}</td>)}</tr><tr><th scope="row">Monthly payment</th>{rateStructures(loanTerms).map(structure => <td>{structure.monthly} payments</td>)}</tr><tr><th scope="row">Balloon</th>{rateStructures(loanTerms).map(structure => <td>{structure.balloon}</td>)}</tr><tr><th scope="row">Optional extension</th>{rateStructures(loanTerms).map(structure => <td>{loanTerms.extensionMonths} for {structure.extension}, only if all payments have been made on time</td>)}</tr></tbody></table></div>
+<p class="term-disclosure">Program descriptions do not guarantee financing or a particular closing or draw date. Our lending partner's written offer controls.</p>
+</div></section>
+{example && <section class="section"><div class="container"><h2>Worked loan cost example</h2><p class="section__intro">Illustrative {dollars(example.amount)} loan held for {example.months} months, with {example.assumption.toLowerCase()}. The loan amount and hold period are editable sample inputs in our program terms sheet; the figures below are calculated from that sheet's current rates and points.</p><div class="compare-wrap"><table class="compare-table structure-table"><caption>Illustrative financing cost, excluding principal and other charges</caption><thead><tr><th scope="col">Cost</th>{example.structures.map(x=><th scope="col">{x.name}</th>)}</tr></thead><tbody><tr><th scope="row">Closing points</th>{example.structures.map(x=><td>{dollars(x.points)}</td>)}</tr><tr><th scope="row">Monthly interest</th>{example.structures.map(x=><td>{dollars(x.monthly)}</td>)}</tr><tr><th scope="row">Interest for {example.months} months</th>{example.structures.map(x=><td>{dollars(x.interest)}</td>)}</tr><tr><th scope="row">Points + interest</th>{example.structures.map(x=><td>{dollars(x.total)}</td>)}</tr><tr><th scope="row">Optional extension points, if eligible</th>{example.structures.map(x=><td>{dollars(x.extension)}</td>)}</tr></tbody></table></div><p class="term-disclosure">This simplified example assumes the full loan balance is outstanding for the hold period. It excludes repayment of principal, closing and title charges, insurance, draw or inspection fees, taxes and any other costs in an actual offer. An extension is not automatic and requires on-time payments. Our lending partner determines eligibility and gives the final terms in writing; no funding, timing or profit is guaranteed.</p></div></section>}
+<section class="section"><div class="container guide-prose">
+<h2>How the after-repair value shapes the loan</h2>
+<p>The after-repair value, or ARV, is the estimated resale price of the finished home. When an advance is expressed as a share of ARV, the estimate behind that number does real work: the higher and better supported the ARV, the more a lender may advance against the project.</p>
+<p>Support the estimate with comparable sales that match the finished home, not the property as it sits today. A lender will test the same comparisons when it reviews your file.</p>
+</div></section>
+<section class="section section--tint"><div class="container guide-prose">
+<h2>Compare the full cost</h2><p>For each structure, add the points due at closing to the monthly interest over the time you expect to hold the loan. Then include third-party closing charges and any fees in the actual offer. If you need an extension, check its points and the on-time-payment condition. The six-month balloon means the principal is due at that point unless an extension is granted under the loan documents.</p><p>The four priority city pages discuss property-level renovation questions without assuming a loan amount or an after-repair value for a real project.</p>
+</div></section>
+<section class="section"><div class="container guide-prose">
+<h2>The other costs in the file</h2>
+<p>Interest is only one line. Points or origination fees may be charged at closing. Title and escrow charges apply in Arizona like any purchase. Insurance during the project, and in some cases draw or inspection fees, can add to the total.</p>
+<p>Ask for the complete list in writing before you commit. Two offers with the same rate can produce very different totals once the fees are counted.</p>
+</div></section>
+<section class="section section--tint"><div class="container guide-prose">
+<h2>How to compare offers</h2>
+<p>Total the interest over the months you actually expect to hold the property, add every fee, and add the closing costs on the file. Compare that full number across offers rather than comparing rates alone.</p>
+<p>The funding process behind these figures is covered in <a href="/how-fix-and-flip-funding-works-in-arizona/">how fix and flip funding works in Arizona</a>, and the <a href="/fix-and-flip-vs-hard-money/">fix and flip vs hard money</a> guide explains how this kind of loan relates to other products.</p>
+</div></section>
+<section class="section" id="faq"><div class="container faq"><h2>Common questions about costs</h2><div>{faqs.map(f=><details><summary>{f.q}</summary><p>{f.a}</p></details>)}</div></div></section>
+<section class="final-cta"><div class="container"><h2>Have a property in mind?</h2><p>Tell us what you plan to buy and improve. We will review the details and discuss possible funding connections without promising a loan.</p><a class="btn" href="#deal-form">Submit your project <span aria-hidden="true">↗</span></a></div></section>
+</main><Footer/></Base>
+
+<style>
+.structure-table{table-layout:fixed;width:100%}
+.structure-table th,.structure-table td{overflow-wrap:anywhere}
+.structure-table thead th:first-child,.structure-table tbody th{width:28%}
+@media(max-width:600px){.structure-table{font-size:12px}.structure-table.compare-table thead th,.structure-table.compare-table tbody th,.structure-table.compare-table td{padding:9px 7px;white-space:normal}.structure-table thead th:first-child,.structure-table tbody th{width:28%}}
+</style>
