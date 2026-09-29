@@ -1,0 +1,64 @@
+---
+import '../styles/global.css';
+import {brand,domain} from '../data/cities';
+interface Props {title:string;description:string;path:string;jsonld?:object[];fabHref?:string}
+const {title,description,path,jsonld=[],fabHref='#deal-form'}=Astro.props;
+const canonical=`https://${domain}${path}`;
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>{title}</title>
+<meta name="description" content={description}/>
+<link rel="canonical" href={canonical}/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content={title}/>
+<meta property="og:description" content={description}/>
+<meta property="og:url" content={canonical}/>
+<meta property="og:site_name" content={brand}/>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+<meta name="theme-color" content="#f4eee5"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet"/>{jsonld.map(obj=>
+<script is:inline type="application/ld+json" set:html={JSON.stringify(obj)}/>)}<!-- GA4 is intentionally not configured pending the site-specific ID. -->
+</head>
+<body>
+<slot/>
+<a href={fabHref} class="fab-deal" aria-label="Submit a project, jump to the form">
+<span class="fab-deal-ico" aria-hidden="true">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+<path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6">
+</path>
+</svg>
+</span>
+<span class="fab-deal-text">
+<span class="fab-deal-text-k">Fix &amp; Flip Funding</span>
+<span class="fab-deal-text-v">Submit Project</span>
+</span>
+</a>
+<script is:inline>
+/* Hide the floating CTA whenever the form card enters the viewport. */
+(() => {
+  const cta = document.querySelector('.fab-deal');
+  const form = document.querySelector('#deal-form') || document.querySelector('[data-lead-form]')?.parentElement;
+  if (!cta || !form) return;
+  const sync = () => {
+    const rect = form.getBoundingClientRect();
+    cta.style.display = rect.bottom > 0 && rect.top < window.innerHeight && rect.right > 0 && rect.left < window.innerWidth ? 'none' : '';
+  };
+  sync();
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(sync, { threshold: 0 }).observe(form);
+  } else {
+    window.addEventListener('scroll', sync, { passive: true });
+    window.addEventListener('resize', sync);
+  }
+})();
+</script>
+<script is:inline src="https://api.airchatty.com/js/external-tracking.js" data-tracking-id="tk_61d238e145314251999b74fdd5c953cf" defer>
+</script>
+</body>
+</html>
