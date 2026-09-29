@@ -22,7 +22,7 @@ const canonical=`https://${domain}${path}`;
 <meta name="theme-color" content="#f4eee5"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet"/>{jsonld.map(obj=>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet"/>{(jsonld.length ? jsonld : [{"@context":"https://schema.org","@type":"WebPage",name:title,url:canonical,description}]).map(obj=>
 <script is:inline type="application/ld+json" set:html={JSON.stringify(obj)}/>)}<!-- GA4 is intentionally not configured pending the site-specific ID. -->
 </head>
 <body>
