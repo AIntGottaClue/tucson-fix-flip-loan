@@ -1,0 +1,111 @@
+---
+import {formName} from '../data/cities';
+interface Props { cityName:string; location:string; }
+const {cityName,location}=Astro.props;
+---
+<div class="hero__form-card" id="deal-form"><div class="form-intro"><h2>Tell us about your project</h2><p>Share what you know about the {cityName} property. A submission is not a loan application or approval.</p></div>
+<form id={formName} name={formName} class="deal-form" method="POST">
+<input type="text" class="deal-form__ghost" name="page_site" value="Tucson Fix &amp; Flip Loan" tabindex="-1" aria-hidden="true" readonly/><input type="text" class="deal-form__ghost" name="page_location" value={location} tabindex="-1" aria-hidden="true" readonly/><input type="text" class="deal-form__ghost" name="page_code" value="FNF" tabindex="-1" aria-hidden="true" readonly/>
+<div class="deal-form__trap" aria-hidden="true"><label for="wdc_website">Website</label><input id="wdc_website" name="website" type="text" tabindex="-1" autocomplete="off" /></div>
+<div class="deal-form__field"><label for="full_name">Name</label><input id="full_name" name="full_name" type="text" autocomplete="name" required /></div>
+<div class="deal-form__row"><div class="deal-form__field"><label for="phone">Phone</label><input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required /></div><div class="deal-form__field"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" required /></div></div>
+<div class="deal-form__field"><label for="page_details">Tell us about the deal</label><textarea id="page_details" name="page_details" rows="4" placeholder="Property address, purchase, renovation plan and intended resale" required></textarea></div>
+<button class="btn deal-form__submit" type="submit">Submit your project <span aria-hidden="true">↗</span></button><p class="deal-form__fine">We use your information to respond to your request. Read our <a href="/privacy/">Privacy Policy</a>.</p><p role="status" aria-live="polite"></p></form>
+<div class="deal-success" id="deal-success" role="status" aria-live="polite" tabindex="-1" hidden><svg class="deal-success__icon" viewBox="0 0 64 64" width="72" height="72" aria-hidden="true"><circle cx="32" cy="32" r="28" fill="none" stroke="currentColor" stroke-width="5"/><path d="M21 33.5l7.5 7.5L43.5 25" fill="none" stroke="currentColor" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/></svg><h2 class="deal-success__title">Request Received</h2><p class="deal-success__text">We have your {cityName} project details and will review them. Watch your phone and email for a response.</p><button type="button" class="deal-success__again">Submit another project</button></div>
+</div>
+<script is:inline>
+(function () {
+  var form = document.querySelector('.hero__form-card form');
+  if (!form) return;
+  var card = form.closest('.hero__form-card');
+  var success = card.querySelector('.deal-success');
+  var phone = form.querySelector('input[name="phone"]');
+  var status = form.querySelector('[role="status"]');
+  var button = form.querySelector('button[type="submit"]');
+  var attempt = null, seq = 0;
+  function normalize() {
+    var digits = phone.value.replace(/\D/g, '');
+    if (digits.length === 11 && digits.charAt(0) === '1') digits = digits.slice(1);
+    if (digits.length === 10 && /^[2-9]\d{2}[2-9]\d{6}$/.test(digits)) {
+      phone.value = '+1' + digits;
+      phone.setCustomValidity('');
+      return true;
+    }
+    phone.setCustomValidity('Please enter a 10-digit US phone number.');
+    return false;
+  }
+  function valid() {
+    if (!normalize()) { phone.reportValidity(); phone.focus(); return false; }
+    var bad = Array.from(form.querySelectorAll('[required]')).find(function (el) { return !el.checkValidity(); });
+    if (bad) { bad.reportValidity(); bad.focus(); return false; }
+    return true;
+  }
+  phone.addEventListener('blur', normalize);
+  phone.addEventListener('input', function () { phone.setCustomValidity(''); });
+  // Block the tracker click fallback too: its own handler can queue an invalid form
+  // 50ms after a button click even if the submit event was prevented.
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('button[type="submit"]') !== button) return;
+    if (!valid()) { attempt = null; status.textContent = ''; e.preventDefault(); e.stopImmediatePropagation(); }
+  }, true);
+  document.addEventListener('submit', function (e) {
+    if (e.target !== form) return;
+    if (!valid()) { attempt = null; status.textContent = ''; e.preventDefault(); e.stopImmediatePropagation(); return; }
+    e.preventDefault();
+    var id = ++seq;
+    attempt = { id: id, name: form.elements.full_name.value.trim(), phone: phone.value,
+      email: form.elements.email.value.trim(), details: form.elements.page_details.value.trim(),
+      location: form.elements.page_location.value, submitted: false };
+    status.textContent = 'Submitting...';
+    setTimeout(function () {
+      if (attempt && attempt.id === id) {
+        status.textContent = 'Submission attempted. We cannot confirm receipt here. Please try again or use another contact route.';
+        attempt = null;
+      }
+    }, 12000);
+  }, true);
+  form.addEventListener('submit', function (e) { e.preventDefault(); });
+  var nativeFetch = window.fetch.bind(window);
+  window.fetch = function (url, options) {
+    var pending = nativeFetch(url, options);
+    try {
+      var href = typeof url === 'string' ? url : url && url.url;
+      if (href && href.indexOf('backend.leadconnectorhq.com/external-tracking/events') !== -1 &&
+          options && String(options.method).toUpperCase() === 'POST' && attempt) {
+        var event = JSON.parse(options.body);
+        var data = event.formData || {};
+        var current = attempt;
+        if (event.type === 'external_form_submission' && data.full_name === current.name &&
+            data.phone === current.phone && data.email === current.email &&
+            data.page_details === current.details && data.page_location === current.location && !current.submitted) {
+          current.submitted = true;
+          pending.then(function (response) {
+            return response.clone().json().then(function (body) {
+              if (attempt !== current) return;
+              if (response.status !== 200 || !body || body.status !== 'ok') throw Error('Unconfirmed response');
+              attempt = null;
+              status.textContent = '';
+              form.hidden = true;
+              card.querySelector('.form-intro').hidden = true;
+              success.hidden = false;
+              card.classList.add('is-success');
+              success.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              success.focus({ preventScroll: true });
+            });
+          }).catch(function () {
+            if (attempt !== current) return;
+            status.textContent = 'Submission attempted. We cannot confirm receipt here. Please try again or use another contact route.';
+            attempt = null;
+          });
+        }
+      }
+    } catch (err) { /* Never interfere with the tracker. */ }
+    return pending;
+  };
+  success.querySelector('.deal-success__again').addEventListener('click', function () {
+    form.reset(); phone.setCustomValidity(''); status.textContent = ''; attempt = null;
+    success.hidden = true; form.hidden = false; card.querySelector('.form-intro').hidden = false;
+    card.classList.remove('is-success'); form.elements.full_name.focus();
+  });
+})();
+</script>
