@@ -1,0 +1,19 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import CityContent from '../components/CityContent.astro';
+import {getLoanTerms} from '../data/loanTerms';
+import {cities,brand,domain,priorityCities,scenarios} from '../data/cities';
+const {slug}=Astro.params;
+const city=cities.find(c=>c.slug===slug);
+if (!city) return new Response('Not found', { status: 404 });
+const loanTerms=await getLoanTerms();
+const singleLender = (text:string) => text.replaceAll('potential funding sources', 'one lending partner');
+const url=`https://${domain}/${city.slug}/`;
+const businessId=`https://${domain}/#business`;
+const isPriority=priorityCities.includes(city.slug);
+const faq=[{q:`Can you connect investors with fix and flip funding in ${city.name}?`,a:`Share the ${city.name} property and renovation plan for review. We are not a direct lender and cannot promise a match or approval.`},{q:'Who determines the loan terms?',a:'Our lending partner determines eligibility, terms and documentation for a specific project.'}];
+const jsonld=[{'@context':'https://schema.org','@type':'FinancialService','@id':businessId,name:brand,url:`https://${domain}/`,areaServed:cities.map(c=>({'@type':'City',name:c.name,containedInPlace:{'@type':'State',name:'Arizona'}})),description:'Fix and flip funding connections for real estate investors across metro Tucson. Not a direct lender.'},{'@context':'https://schema.org','@type':'Service',serviceType:'Fix and flip loan connection service',provider:{'@id':businessId},areaServed:{'@type':'City',name:city.name,containedInPlace:{'@type':'State',name:'Arizona'}},url},{'@context':'https://schema.org','@type':'FAQPage',mainEntity:faq.map(f=>({'@type':'Question',name:f.q,acceptedAnswer:{'@type':'Answer',text:f.a}}))},{'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'Home',item:`https://${domain}/`},{'@type':'ListItem',position:2,name:`${city.name}, AZ`,item:url}]}];
+---
+<Base title={city.title} description={city.description} path={`/${city.slug}/`} jsonld={jsonld}><Header/><main><CityContent cityName={city.name} location={`${city.name}, AZ`} intro={singleLender(city.intro)} angle={singleLender(city.angle)} caution={singleLender(city.caution)} slug={city.slug} summaryTerms={isPriority} summarySteps={isPriority} scenario={scenarios[city.slug]} loanTerms={loanTerms}/></main><Footer/></Base>
