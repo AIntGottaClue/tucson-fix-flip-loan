@@ -1,0 +1,8 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import DealForm from '../components/DealForm.astro';
+import {brand} from '../data/cities';
+---
+<Base title={`Terms of Service | ${brand}`} description="Terms for using the Tucson Fix & Flip Loan website." path="/terms/"><Header/><main id="main"><section class="legal-hero"><div class="container legal-hero__inner"><div><h1>Terms of Service</h1><p>Information about using this website and sending a project for review.</p></div><DealForm cityName="metro Tucson" location="TUSFF"/></div></section><div class="container legal"><h2>What this site does</h2><p>This site provides general information and a way to request a possible introduction to a lending partner. We are not a direct lender and do not make loan decisions. Nothing here is a loan offer or legal, tax or financial advice.</p><h2>No funding guarantee</h2><p>Submitting information does not guarantee a connection, approval or funding. Our lending partner determines eligibility, costs, terms and documentation for its own offer. Read and confirm the full terms before making a decision.</p><h2>Your information</h2><p>Send accurate information to the best of your knowledge and do not misuse the website. Project details may be shared with the lending partner as explained in the Privacy Policy. You remain responsible for your own decisions and for consulting qualified advisers where appropriate.</p><h2>Site content</h2><p>Content may change and is provided for general information. We do not guarantee that it is complete or suitable for a particular project. The current version of these terms is posted here.</p></div></main><Footer/></Base>
