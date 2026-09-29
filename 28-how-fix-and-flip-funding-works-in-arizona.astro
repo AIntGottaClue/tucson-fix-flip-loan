@@ -1,0 +1,55 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import {brand,domain} from '../data/cities';
+import {getLoanTerms} from '../data/loanTerms';
+const loanTerms=await getLoanTerms();
+const url=`https://${domain}/how-fix-and-flip-funding-works-in-arizona/`;
+const faqs=[
+  {q:'Is Tucson Fix & Flip Loan our lending partner?',a:'No. We connect investors with one lending partner. Our lending partner makes its own decisions and provides the actual terms on a specific file.'},
+  {q:'Do I need fix and flip experience?',a:'Lenders look at the whole file, and experience is one part of it. A clear renovation plan, a supported resale estimate and a realistic budget matter on every deal, whether it is your first project or your fifteenth.'},
+  {q:'How much cash do I need to bring?',a:"That depends on the advance a lender offers against the property and the after-repair value. If the loan does not cover the full purchase and renovation, the difference plus closing costs and reserves comes from you. Our lending partner's offer will show its own structure."},
+  {q:'How fast can funding move?',a:`Our program describes ${loanTerms.closingSpeed}, but actual closing depends on our lending partner's review and a complete file. No closing date is guaranteed.`},
+  {q:'Can I buy through an LLC?',a:'Many investors purchase through an entity. If you do, expect the title and escrow team and our lending partner to ask for the entity documents for the file. The choice of entity belongs with your own legal and tax advisors.'}
+];
+const jsonld=[{'@context':'https://schema.org','@type':'WebPage',name:'How Fix and Flip Funding Works in Arizona',url,description:'The asset-based fix and flip funding process in Arizona: what a lender looks at, the paperwork a file usually needs, and how a project moves toward closing.',isPartOf:{'@type':'WebSite',name:brand,url:`https://${domain}/`}},{'@context':'https://schema.org','@type':'FAQPage',mainEntity:faqs.map(f=>({'@type':'Question',name:f.q,acceptedAnswer:{'@type':'Answer',text:f.a}}))},{'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'Home',item:`https://${domain}/`},{'@type':'ListItem',position:2,name:'How Fix and Flip Funding Works in Arizona',item:url}]}];
+---
+<Base title="How Fix and Flip Funding Works in Arizona | Tucson Fix & Flip Loan" description="The asset-based fix and flip funding process in Arizona: what a lender looks at, the paperwork a file usually needs, and how a project moves toward closing." path="/how-fix-and-flip-funding-works-in-arizona/" jsonld={jsonld} fabHref="/#deal-form">
+<Header base="/"/><main>
+<section class="guide-hero"><div class="container"><h1>How Fix and Flip Funding Works in Arizona</h1></div></section>
+<section class="section"><div class="container guide-prose">
+<p>Fix and flip funding is short term financing built around an investment property rather than the borrower's paycheck. The property, the renovation plan and the intended resale carry the conversation. A lender can still review credit, experience and other borrower details, but the deal itself is the starting point.</p>
+<p>Tucson Fix & Flip Loan connects investors with one lending partner. We are not a direct lender, and nothing on this page is a promise of approval, terms or timing.</p>
+</div></section>
+<section class="section section--tint"><div class="container guide-prose">
+<h2>What a lender looks at</h2>
+<p>The property comes first. The address, current condition and contract price tell a funding partner what is being bought. The renovation scope and budget show what will be spent, and comparable sales support what the finished home might sell for.</p>
+<p>The exit matters as much as the purchase. Most fix and flip loans are repaid from the resale, so a lender wants to see how the after-repair value was estimated and how the project will be sold. Our <a href="/fix-and-flip-loan-costs/">fix and flip loan costs</a> guide shows how the numbers behind an offer typically fit together.</p>
+</div></section>
+<section class="section"><div class="container guide-prose">
+<h2>How a project moves forward</h2>
+<p>You share the property details, the purchase terms and the renovation plan. We review the information and may ask for more context, which helps identify whether a funding partner could be a fit. Our lending partner decides eligibility, terms and documentation.</p>
+<p>If an offer works for your project, the file moves toward closing. Arizona closings typically run through a title and escrow team, and the attorney's office can confirm the exact sequence and costs for your file. Review the full offer and every cost before deciding to move forward.</p>
+</div></section>
+<section class="section section--tint"><div class="container guide-prose">
+<h2>The paperwork a file usually needs</h2>
+<p>Our lending partner and the title and escrow team confirm exactly what your file requires. Across most Arizona fix and flip projects, the paperwork includes:</p>
+<ul class="guide-list">
+<li>The signed purchase and sale agreement for the property</li>
+<li>A written scope of work and renovation budget</li>
+<li>Comparable sales or other support for the intended resale</li>
+<li>Entity documents if you are buying through an LLC</li>
+<li>Proof of funds for the cash portion the loan does not cover</li>
+<li>Insurance information for the property during the project</li>
+</ul>
+<p>Complete files move faster. Sending everything you have at the start keeps questions from surfacing right before closing.</p>
+</div></section>
+<section class="section"><div class="container guide-prose">
+<h2>A word about timing</h2>
+<p>Our program describes {loanTerms.closingSpeed} and {loanTerms.drawTiming}. Those are program features, not a guaranteed date for any project. Ask our lending partner to confirm the timing and conditions on your file in writing.</p>
+<p>If you are weighing this structure against other options, the <a href="/fix-and-flip-vs-hard-money/">fix and flip vs hard money</a> guide compares them honestly, including the cases where a different product fits better.</p>
+</div></section>
+<section class="section section--tint" id="faq"><div class="container faq"><h2>Common questions about the process</h2><div>{faqs.map(f=><details><summary>{f.q}</summary><p>{f.a}</p></details>)}</div></div></section>
+<section class="final-cta"><div class="container"><h2>Have a property in mind?</h2><p>Tell us what you plan to buy and improve. We will review the details and discuss possible funding connections without promising a loan.</p><a class="btn" href="/#deal-form">Submit your project <span aria-hidden="true">↗</span></a></div></section>
+</main><Footer/></Base>
