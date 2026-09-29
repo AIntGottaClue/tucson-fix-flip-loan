@@ -1,0 +1,60 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import {brand,domain} from '../data/cities';
+const url=`https://${domain}/fix-and-flip-vs-hard-money/`;
+const faqs=[
+  {q:'Is a fix and flip loan the same thing as hard money?',a:'They overlap heavily. Hard money is the broader category of short term, asset-based private lending. A fix and flip loan is hard money shaped for a buy, renovate and resell project, with the renovation budget and after-repair value built into the structure.'},
+  {q:'Is hard money more expensive than a bank loan?',a:'Costs vary by lender and loan. Compare monthly interest, points, the term and all fees against the complete written terms of any bank offer.'},
+  {q:'Can I use this kind of funding for a rental property?',a:'Fix and flip funding is priced and structured for a resale exit. If you plan to hold the property as a rental, ask about products built for that exit, such as a rental or DSCR loan, rather than forcing a short term flip structure onto a long term plan.'},
+  {q:'What do lenders in this space actually evaluate?',a:'The property, the renovation scope and budget, the supported after-repair value, your cash position and your plan for the exit. Credit and experience can still factor in, but they sit behind the deal itself.'},
+  {q:'Do I need perfect credit?',a:"No. Asset-based lenders weigh the property and the plan more heavily than a score, though credit can affect the terms offered. Our lending partner's written offer on your actual file is the only answer that counts."}
+];
+const jsonld=[{'@context':'https://schema.org','@type':'WebPage',name:'Fix and Flip vs Hard Money',url,description:'An honest comparison of fix and flip loans and hard money: how the terms relate, where the costs and speed differ, and when another product fits better.',isPartOf:{'@type':'WebSite',name:brand,url:`https://${domain}/`}},{'@context':'https://schema.org','@type':'FAQPage',mainEntity:faqs.map(f=>({'@type':'Question',name:f.q,acceptedAnswer:{'@type':'Answer',text:f.a}}))},{'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'Home',item:`https://${domain}/`},{'@type':'ListItem',position:2,name:'Fix and Flip vs Hard Money',item:url}]}];
+---
+<Base title="Fix and Flip vs Hard Money: An Honest Comparison | Tucson Fix & Flip Loan" description="An honest comparison of fix and flip loans and hard money: how the terms relate, where the costs and speed differ, and when another product fits better." path="/fix-and-flip-vs-hard-money/" jsonld={jsonld} fabHref="/#deal-form">
+<Header base="/"/><main>
+<section class="guide-hero"><div class="container"><h1>Fix and Flip vs Hard Money</h1></div></section>
+<section class="section"><div class="container guide-prose">
+<p>Investors use these two terms loosely, and the overlap causes real confusion. The short version: hard money is the broad category, and a fix and flip loan is one specific shape of it. Understanding that relationship helps you ask better questions when you review an offer.</p>
+<p>This page compares them honestly, including the cases where neither is the right answer for your project.</p>
+</div></section>
+<section class="section section--tint"><div class="container guide-prose">
+<h2>What hard money means</h2>
+<p>Hard money is short term, asset-based lending from private sources. The property secures the loan, underwriting focuses on the deal rather than income documentation, and pricing runs higher than bank financing in exchange for speed and flexibility.</p>
+<p>The category covers many purposes: bridge loans, land loans, construction draws and renovation financing all sit under the same umbrella.</p>
+</div></section>
+<section class="section"><div class="container guide-prose">
+<h2>What a fix and flip loan adds</h2>
+<p>A fix and flip loan is hard money built for one job: buy a property, renovate it and resell it. The structure reflects that job. The renovation budget is part of the underwriting, the advance is often tied to the after-repair value, and the term matches a buy, renovate and sell timeline.</p>
+<p>Because the loan assumes a resale exit, the support for your after-repair estimate carries real weight. The <a href="/fix-and-flip-loan-costs/">fix and flip loan costs</a> guide walks through how rates, advances and fees typically come together in an offer.</p>
+</div></section>
+<section class="section section--tint"><div class="container">
+<h2>Side by side</h2>
+<div class="compare-wrap"><table class="compare-table">
+<caption class="sr-only">Comparison of fix and flip loans, general hard money and bank financing</caption>
+<thead><tr><th scope="col">Question</th><th scope="col">Fix and flip loan</th><th scope="col">General hard money</th><th scope="col">Bank financing</th></tr></thead>
+<tbody>
+<tr><th scope="row">Purpose</th><td>Buy, renovate and resell one property</td><td>Any short term, asset-secured need</td><td>Long term financing on qualifying properties</td></tr>
+<tr><th scope="row">What underwriting weighs most</th><td>The deal: purchase, scope, after-repair value</td><td>The collateral and the plan</td><td>Your income, credit and the property</td></tr>
+<tr><th scope="row">Renovation budget</th><td>Built into the structure</td><td>Depends on our lending partner</td><td>Often not covered</td></tr>
+<tr><th scope="row">Cost</th><td>Higher rates and fees than a bank</td><td>Higher rates and fees than a bank</td><td>Lower rates, stricter qualification</td></tr>
+<tr><th scope="row">Speed and flexibility</th><td>Fast when the file is complete</td><td>Fast when the file is complete</td><td>Slower, documentation heavy</td></tr>
+<tr><th scope="row">Best fit</th><td>A defined renovation project with a resale exit</td><td>Short term needs a bank will not touch</td><td>Strong borrowers, simple projects, longer holds</td></tr>
+</tbody>
+</table></div>
+</div></section>
+<section class="section"><div class="container guide-prose">
+<h2>When a different product fits better</h2>
+<p>If your project is a light refresh, your income and credit are strong, and the timeline is flexible, conventional financing may cost meaningfully less. If you plan to keep the property as a rental, a product built for a hold makes more sense than a short term flip structure.</p>
+<p>Paying hard money pricing only makes sense when the deal needs what hard money provides: speed, property-first underwriting and a structure that includes the renovation.</p>
+</div></section>
+<section class="section section--tint"><div class="container guide-prose">
+<h2>How to read an offer in this space</h2>
+<p>Whatever the product is called, compare the full cost rather than the headline rate. Interest, points, fees and closing costs all belong in the math, and the term length decides how many months of interest you actually pay. The process itself is covered in <a href="/how-fix-and-flip-funding-works-in-arizona/">how fix and flip funding works in Arizona</a>.</p>
+<p>Review the complete offer before you commit. A lender's written terms on your actual file are the only figures that matter.</p>
+</div></section>
+<section class="section" id="faq"><div class="container faq"><h2>Common questions about the comparison</h2><div>{faqs.map(f=><details><summary>{f.q}</summary><p>{f.a}</p></details>)}</div></div></section>
+<section class="final-cta"><div class="container"><h2>Have a property in mind?</h2><p>Tell us what you plan to buy and improve. We will review the details and discuss possible funding connections without promising a loan.</p><a class="btn" href="/#deal-form">Submit your project <span aria-hidden="true">↗</span></a></div></section>
+</main><Footer/></Base>
