@@ -1,6 +1,6 @@
 export interface City { slug:string; name:string; county:string; title:string; description:string; intro:string; angle:string; caution:string; }
 export const brand = 'Tucson Fix & Flip Loan';
-export const domain = 'tucson.privatemoneyloans.click';
+export const domain = 'tucsonfixandflip.loansapp.cfd';
 export const formName = 'Tucson-Fix-Flip-Loan-Form';
 export const cities: City[] = [
   {slug:'tucson',name:'Tucson',county:'Pima',title:'Fix and Flip Loans in Tucson, AZ | Tucson Fix & Flip Loan',description:'Explore asset-based fix and flip funding for Tucson investment properties. Send your purchase, repair and resale plan for review.',intro:'Tucson projects can vary from an older central-city home to a property at the edge of town. Send us the address, the work you plan and the proposed exit. We connect investors with one lending partner, which reviews each project separately.',angle:'A project near downtown or along Broadway calls for comparable sales that reflect the particular neighborhood and home condition. Put the purchase contract and renovation scope beside the completed sales you are using to support the resale estimate.',caution:'Check roof, cooling and other systems at the property rather than assuming a standard repair budget. Our lending partner determines eligibility and provides any actual terms in writing.'},
