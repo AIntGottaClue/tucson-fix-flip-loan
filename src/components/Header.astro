@@ -22,3 +22,44 @@ const countyCols=Array.from({length:4},(_,i)=>countyEntries.slice(i*perCol,(i+1)
 .site-header__toggle:focus-visible{outline:2px solid currentColor;outline-offset:2px}
 @media(max-width:1100px){.site-header:has(.site-header__toggle[aria-expanded="true"]){z-index:2001}}
 </style>
+
+<script is:inline>
+/* Desktop dropdowns open on hover; touch/mobile keeps the existing tap controls. */
+(function () {
+  var groups = [].slice.call(document.querySelectorAll('header .navlinks__dropdown, header .site-nav__dropdown, header .dd, header .sat-desktop-nav details, header nav#nav > details'));
+  function desktop(group) {
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return false;
+    var header = group.closest('header');
+    var toggle = header && header.querySelector('[data-menu-button], [data-menu], [data-mobile-menu], .site-header__toggle, button.menu');
+    return !toggle || getComputedStyle(toggle).display === 'none';
+  }
+  function set(group, open) {
+    if (group.tagName === 'DETAILS') group.open = open;
+    else group.classList.toggle(group.classList.contains('site-nav__dropdown') ? 'is-open' : 'open', open);
+    var trigger = group.querySelector('button, summary');
+    if (trigger) trigger.setAttribute('aria-expanded', String(open));
+  }
+  groups.forEach(function (group) {
+    var trigger = group.querySelector('button, summary');
+    if (!trigger) return;
+    group.addEventListener('mouseenter', function () {
+      if (!desktop(group)) return;
+      groups.forEach(function (other) { if (other !== group) set(other, false); });
+      set(group, true);
+    });
+    group.addEventListener('mouseleave', function () { if (desktop(group)) set(group, false); });
+    group.addEventListener('focusin', function () { if (desktop(group)) set(group, true); });
+    group.addEventListener('focusout', function (event) { if (desktop(group) && !group.contains(event.relatedTarget)) set(group, false); });
+    trigger.addEventListener('click', function (event) {
+      if (!desktop(group) || event.detail === 0) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      set(group, true);
+    }, true);
+    group.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') { trigger.focus(); set(group, false); }
+    });
+  });
+  window.addEventListener('resize', function () { groups.forEach(function (group) { set(group, false); }); });
+})();
+</script>
